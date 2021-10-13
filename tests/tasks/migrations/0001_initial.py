@@ -26,8 +26,10 @@ class Migration(migrations.Migration):
             name='Participation',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('meeting', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='tasks.meeting')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='participations', to=settings.AUTH_USER_MODEL)),
+                ('meeting', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                              to='tasks.meeting', related_name='participations')),
+                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                           related_name='participations', to=settings.AUTH_USER_MODEL)),
             ],
         ),
         migrations.AddField(
@@ -39,8 +41,20 @@ class Migration(migrations.Migration):
             name='Invitation',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.CharField(choices=[('sent', 'sent'), ('accepted', 'accepted'), ('declined', 'declined')], default='sent', max_length=20)),
-                ('participation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='invitations', to='tasks.participation')),
+                (
+                    'status',
+                    models.CharField(
+                        choices=[
+                            ('sent', 'sent'),
+                            ('accepted', 'accepted'),
+                            ('declined', 'declined')
+                        ],
+                        default='sent',
+                        max_length=20
+                    )
+                ),
+                ('participation', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                                    related_name='invitations', to='tasks.participation')),
             ],
         ),
         migrations.CreateModel(
@@ -48,7 +62,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('description', models.TextField(max_length=3000)),
-                ('meeting', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='comments', to='tasks.meeting')),
+                ('meeting', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE,
+                                              related_name='comments', to='tasks.meeting')),
                 ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
             ],
         ),
