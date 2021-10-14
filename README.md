@@ -2,7 +2,7 @@
 
 Provides utilities for iterating over django model instances hierarchy
 
-##Example:
+## Example:
 #### Simple instances tree clone
 
 
@@ -90,7 +90,7 @@ pip install django-relations-iterator
 
 ## Features
 
-###Instance tree
+### Instance tree
 
 ```python
 from relations_iterator import ConfigurableRelationTree
@@ -175,8 +175,8 @@ from relations_iterator import AbstractVisitor
 
 Provides abstract class, with interface to implement visitor pattern. You must implement `.visit(node)` method, to complete implementation
 
-####Examples:
-####Clone visitor
+#### Examples:
+#### Clone visitor
 
 ```python
 from relations_iterator import TreeNode
@@ -236,7 +236,7 @@ pprint(tree.tree)
 }
 ```
 
-####Path print visitor
+#### Path print visitor
 
 Path print visitor will print all parent nodes from root to curent node
 
