@@ -1,3 +1,6 @@
 Django>=3
 factory-boy>=3
+coverage
+pytest-cov
 pytest>=6
+pytest-django
