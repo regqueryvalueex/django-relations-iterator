@@ -1,6 +1,6 @@
 import typing
 
-from src.relations_iterator.relation_tree import ConfigurableRelationTree, RelationTree
+from .relation_tree import ConfigurableRelationTree, RelationTree
 
 
 from abc import ABC, abstractmethod

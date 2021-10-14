@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from src.relations_iterator.relation_tree import TreeNode
+from .relation_tree import TreeNode
 
 
 class AbstractVisitor(ABC):
