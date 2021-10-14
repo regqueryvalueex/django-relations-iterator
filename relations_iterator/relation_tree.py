@@ -39,25 +39,25 @@ class ConfigurableRelationTree:
     def collect(
         self,
         *,
-        node: typing.Optional[TreeNode] = None,
+        root_node: typing.Optional[TreeNode] = None,
         structure: typing.Optional[RelationTreeConfig] = None
     ) -> RelationTree:
-        if not node:
-            node = self.get_node(instance=self.root)
+        if not root_node:
+            root_node = self.get_node(instance=self.root)
 
-        root = node.instance
+        root = root_node.instance
         structure = structure if structure is not None else self.structure
         subtree = {}
-        tree = {node: subtree}
+        tree = {root_node: subtree}
 
         for sub_relation_name, substructure in structure.items():
             sub_relation = root._meta.get_field(sub_relation_name)
             related_instances = self._get_related_instances(instance=root, relation=sub_relation)
             subtree[sub_relation] = {}
             for related_instance in related_instances:
-                node = self.get_node(instance=related_instance, relation=sub_relation, parent=node)
+                node = self.get_node(instance=related_instance, relation=sub_relation, parent=root_node)
                 subtree[sub_relation].update(
-                    self.collect(node=node, structure=substructure)
+                    self.collect(root_node=node, structure=substructure)
                 )
 
         return tree

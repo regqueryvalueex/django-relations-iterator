@@ -9,7 +9,7 @@ CLONE_STRUCTURE = {
 
 
 class CloneVisitor(AbstractVisitor):
-    def visit(self, *, node: TreeNode):
+    def visit(self, node: TreeNode):
         node.instance.pk = None
         if node.parent is not None:
             parent_joining_column, instance_joining_column = node.relation.get_joining_columns()[0]

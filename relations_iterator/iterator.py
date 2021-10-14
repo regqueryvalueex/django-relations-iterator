@@ -16,7 +16,7 @@ class AbstractRelationTreeIterator(ABC):
 
 
 class RelationTreeIterator(AbstractRelationTreeIterator):
-    def __init__(self, *, tree: ConfigurableRelationTree):
+    def __init__(self, tree: ConfigurableRelationTree):
         self.tree = tree
 
     def get_iterator(self, tree: typing.Optional[RelationTree] = None):

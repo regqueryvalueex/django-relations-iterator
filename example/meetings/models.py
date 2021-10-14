@@ -1,18 +1,16 @@
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.db import models
-
-User = get_user_model()
 
 
 class Meeting(models.Model):
     title = models.CharField(max_length=200)
     time = models.DateTimeField(null=True, blank=True)
-    participants = models.ManyToManyField(User, through='Participation', blank=True)
+    participants = models.ManyToManyField(settings.AUTH_USER_MODEL, through='Participation', blank=True)
 
 
 class Participation(models.Model):
     meeting = models.ForeignKey('Meeting', on_delete=models.CASCADE, related_name='participations')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='participations')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='participations')
 
 
 class Invitation(models.Model):
@@ -31,5 +29,5 @@ class Invitation(models.Model):
 
 class Comment(models.Model):
     meeting = models.ForeignKey('Meeting', on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.TextField(max_length=3000)
