@@ -1,8 +1,8 @@
 import pytest
 
 from meetings.clone import CloneVisitor
-from relations_iterator.iterator import RelationTreeIterator
-from relations_iterator.relation_tree import ConfigurableRelationTree
+from src.relations_iterator.iterator import RelationTreeIterator
+from src.relations_iterator.relation_tree import ConfigurableRelationTree
 from meetings.models import Meeting
 from .factories import MeetingFactory, ParticipationFactory, InvitationFactory, CommentFactory
 

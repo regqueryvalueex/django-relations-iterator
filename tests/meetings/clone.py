@@ -1,5 +1,5 @@
-from relations_iterator.relation_tree import TreeNode
-from relations_iterator.visitor import AbstractVisitor
+from src.relations_iterator.relation_tree import TreeNode
+from src.relations_iterator.visitor import AbstractVisitor
 
 CLONE_STRUCTURE = {
     'participations': {
