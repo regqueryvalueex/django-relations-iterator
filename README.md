@@ -2,6 +2,8 @@
 
 Provides utilities for iterating over django model instances hierarchy
 
+Reasoning and solution for use case with cloning - https://hackernoon.com/the-smart-way-to-clone-django-instances
+
 ## Example:
 #### Simple instances tree clone
 
