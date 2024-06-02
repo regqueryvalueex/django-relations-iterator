@@ -1,6 +1,6 @@
 # django-relations-Iterator
 
-Provides utilities for iterating over django model instances hierarchy
+Provides utilities for iterating over django model instances hierarchy. Provides easy out-of-the-box way to clone django instances.
 
 Reasoning and solution for use case with cloning - https://hackernoon.com/the-smart-way-to-clone-django-instances
 
@@ -48,7 +48,7 @@ class Comment(models.Model):
 
 ```python
 #clone.py
-from relations_iterator import TreeNode, AbstractVisitor, RelationTreeIterator, ConfigurableRelationTree
+from relations_iterator import clone, CloneVisitor
 from .models import Meeting
 
 # because of config, tree will ignore comments, but will consider all participations and invitations
@@ -58,32 +58,30 @@ CLONE_STRUCTURE = {
     }
 }
 
-
-class CloneVisitor(AbstractVisitor):
-    def visit(self, node: TreeNode):
-        node.instance.pk = None
-        if node.parent is not None:
-            parent_joining_column, instance_joining_column = node.relation.get_joining_columns()[0]
-            setattr(
-                node.instance,
-                instance_joining_column,
-                getattr(node.parent.instance, parent_joining_column)
-            )
-        node.instance.save()
-
-
-def clone(instance, config):
-    
-    visitor = CloneVisitor()
-    tree = ConfigurableRelationTree(root=instance, structure=config)
-    for node in RelationTreeIterator(tree=tree):
-        visitor.visit(node)
-
         
 meeting = Meeting.objects.last()
-clone(meeting, CLONE_STRUCTURE)
+clone(meeting, CLONE_STRUCTURE, CloneVisitor())
 
 ```
+
+#### Customizing cloning process
+
+```python
+
+# Example: you want to set title for cloned Meeting as {original_title}-COPY 
+# and set time of the instance to None
+class CustomCloneVisitor(CloneVisitor):
+    @singledispatchmethod
+    def customize(self, instance):
+        pass
+
+    @customize.register
+    def _(self, instance: Meeting):
+        instance.title = f'{instance.title}-COPY'
+        instance.time = None
+
+```
+
 ## Installation
 
 ```shell
@@ -177,24 +175,59 @@ from relations_iterator import AbstractVisitor
 
 Provides abstract class, with interface to implement visitor pattern. You must implement `.visit(node)` method, to complete implementation
 
-#### Examples:
-#### Clone visitor
+
+### Instances cloning feature
 
 ```python
-from relations_iterator import TreeNode
+from relations_iterator import clone, CloneVisitor
+```
+
+Provides function to clone instances and simple CloneVisitor class, just as explained below in examples section.
+
+`clone` function accepts 3 arguments:
+
+- `instance` - django Model instance, that needs to be cloned
+- `config` - config dictionary of the structure that needs to be cloned
+- `visitor` - visitor instance. `CloneVisitor` can be used directly or you can customize it and pass your own implementation
+
+Config explanation:
+
+Example:
+```python
+
+# Config for cloning Meeting instance, we want to clone also participation's and invitations
+config = {
+    'participations': {  # related name for `Participation` model, that have fk to Meeting
+        'invitations': {}  # related name for `Invitation` model, that have fk to `Participation` model
+    }
+}
+# All other relations will be skipped, as they are not listed in config
+```
+
+
+#### Examples:
+#### Clone visitor full implementation
+
+```python
+from django.db.models import Model
+from relations_iterator import TreeNode, AbstractVisitor
 
 
 class CloneVisitor(AbstractVisitor):
     def visit(self, node: TreeNode):
         node.instance.pk = None
         if node.parent is not None:
-            parent_joining_column, instance_joining_column = node.relation.get_joining_columns()[0]
+            parent_joining_field, instance_joining_field = node.relation.get_joining_fields()[0]
             setattr(
                 node.instance,
-                instance_joining_column,
-                getattr(node.parent.instance, parent_joining_column)
+                instance_joining_field.attname,
+                parent_joining_field.value_from_object(node.parent.instance)
             )
+        self.customize(node.instance)
         node.instance.save()
+
+    def customize(self, instance: Model) -> None:
+        pass
 
 ```
 
